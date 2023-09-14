@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import app from './firebase.init';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 
 
@@ -49,6 +49,7 @@ function App() {
       .then(result =>{
         let user = result.user;
         console.log(user);
+        setError('')
       })
       .catch(error => setError("The email doesn't exist."));
     }
@@ -57,12 +58,16 @@ function App() {
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
         let user = result.user;
+        setEmail('');
+        setPassword('');
+        emailVerification();
         console.log(user);
       })
       .catch(error => {
         setError("The email already exist");
       });
     }
+
     // Case checking 
     if (!/(?=.*[!@#$%^&*])/.test(password)) {
       setError('Password should contain at least one special character')
@@ -72,10 +77,18 @@ function App() {
     console.log('submitted', email, password)
     event.preventDefault();
   }
+  let resetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+    .then(() => console.log('Email has been sent'))
+  }
+  let emailVerification = () => {
+    sendEmailVerification(auth.currentUser)
+    .then(() => console.log('Email verification sent'))
+  }
 
   return (
     <div>
-      <Form noValidate validated={validated} onSubmit={formSubmit}>
+      <Form className='p-5 shadow-lg p-3 mb-5 bg-white rounded' noValidate validated={validated} onSubmit={formSubmit}>
         <h2 className='text-primary'>{registered ? 'Input Log in details' : 'Input your register details'}</h2>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
@@ -99,6 +112,8 @@ function App() {
       <Form.Group className="mb-3">
         <Form.Check onChange={logIn} label="Already registered?"/>
       </Form.Group>
+      <Button onClick={resetPassword} variant='link'>Reset password</Button>
+      <br />
         <Button variant="primary" type="submit">
         {registered ? 'Log in' : 'Register'}
         </Button>
