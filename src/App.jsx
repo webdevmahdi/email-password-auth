@@ -12,24 +12,24 @@ let auth = getAuth(app);
 function App() {
   let [email, setEmail] = useState('');
   let [password, setPassword] = useState('');
-  let [registered, setRegistered] = useState(false)
+  let [registered, setRegistered] = useState(false);
   let [validated, setValidated] = useState(false);
   let [name, setName] = useState('');
-  let [error, setError] = useState('')
+  let [error, setError] = useState('');
 
   //Blur input field functions
   let emailBlur = event => {
-    setEmail(event.target.value)
-  }
+    setEmail(event.target.value);
+  };
   let passBlur = event => {
-    setPassword(event.target.value)
-  }
+    setPassword(event.target.value);
+  };
 
   // Log in
   let logIn = event => {
-    setError('')
-    setRegistered(event.target.checked)
-  }
+    setError('');
+    setRegistered(event.target.checked);
+  };
 
   // Form submit functions
   let formSubmit = event => {
@@ -40,7 +40,7 @@ function App() {
     if (form.checkValidity() === false) {
       event.stopPropagation();
       return;
-    }
+    };
     setValidated(true);
 
 
@@ -50,7 +50,7 @@ function App() {
         .then(result => {
           let user = result.user;
           console.log(user);
-          setError('')
+          setError('');
         })
         .catch(error => setError("The email doesn't exist."));
     }
@@ -68,15 +68,15 @@ function App() {
         .catch(error => {
           setError("The email already exist");
         });
-    }
+    };
 
     // Case checking 
     if (!/(?=.*[!@#$%^&*])/.test(password)) {
       setError('Password should contain at least one special character')
       return;
-    }
+    };
 
-    console.log('submitted', email, password)
+    console.log('submitted', email, password);
     event.preventDefault();
   }
 
@@ -84,21 +84,21 @@ function App() {
     updateProfile(auth.currentUser, {
       displayName: name
     })
-    .then(() => console.log('Updating name'))
+    .then(() => console.log('Updating name'));
   }
 
   let nameBlur = event =>{
     setName(event.target.value);
-  }
+  };
 
   let resetPassword = () => {
     sendPasswordResetEmail(auth, email)
-      .then(() => console.log('Email has been sent'))
-  }
+      .then(() => console.log('Email has been sent'));
+  };
   let emailVerification = () => {
     sendEmailVerification(auth.currentUser)
-      .then(() => console.log('Email verification sent'))
-  }
+      .then(() => console.log('Email verification sent'));
+  };
 
   return (
     <div>
